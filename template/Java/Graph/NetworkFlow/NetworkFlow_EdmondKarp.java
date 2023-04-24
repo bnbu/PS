@@ -21,7 +21,7 @@ public class NetworFlow_EdmondKarp {
 				int curr = q.poll();
 				for (int next : adj[curr]) {
 					// c[i][j]-f[i][j] > 0: i에서 j로 유량을 흘릴 여유가 남았는가? 여유가 없으면 통과
-	                // prev[next] == -1: next 정점을 아직 방문하지 않았는가? 방문했었으면 통과
+	                		// prev[next] == -1: next 정점을 아직 방문하지 않았는가? 방문했었으면 통과
 					if ((c[curr][next] - f[curr][next]) <= 0) continue;
 					if (prev[next] != -1) continue;
 					q.add(next);
@@ -77,3 +77,10 @@ public class NetworFlow_EdmondKarp {
 		System.out.println(total);
 	}
 }
+// source - sink 까지 보낼 수 있는 유량의 최대치를 구하는 방법
+// source 로부터 증가 경로 (아직 보낼 수 있는 여유가 있는 간선들로 이루어진 경로)를 찾는다
+// 찾은 증가경로 중 가장 낮은 최대치 유량을 찾아서 그것 만큼 흘려보낸다
+// 이 과정을 sink까지 닿는 증가경로를 더 이상 찾지 못할때까지 반복
+
+// 이때, Edmond-Karp는 BFS를 기반으로 증가경로를 찾아낸다
+// O(VE^2)
