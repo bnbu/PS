@@ -2,7 +2,7 @@ package D0508;
 import java.util.*;
 import java.io.*;
 class Pair {
-		int l, r;
+	int l, r;
 }
 public class SegmentTree_Euler_Tour_Technique {
 	static int n, m, cnt;
