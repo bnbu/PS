@@ -4,20 +4,17 @@ class Pair {
 	int l, r;
 }
 public class Main {
-	static int n, cnt, chainNum;
-	static int[] subSize, depth, parent, head, idx, chain;
+	static int n, cnt;
+	static int[] size, depth, head, chainParent;
 	static long[] segTree, arr;
 	static Pair[] range;
-	static boolean[] visit;
 	static ArrayList<Integer>[] adj;
 	// arr : 각 노드에 저장된 값
-	// subSize : 각 노드의 서브트리 갯수
-	// depth : 각 노드의 깊이
-	// parent : 각 노드의 부모
+	// size : 각 노드의 서브트리 갯수
 	// head : 각 노드가 속한 체인의 가장 첫번째 노드
-	// chain : 각 노드가 속한 체인의 번호
+	// depth : 각 노드가 속한 깊이
+	// chainParent : 해당 체인의 head의 부모 노드
 	// range : 각 노드의 HLD 방문 순서 기록
-	// idx : 세그먼트 트리의 리프노드로 바로 이어지는 노드번호
 	// segTree : 세그먼트 트리, 이때 트리의 구간은 HLD방문순서로 구간을 결정한다
 	
 	// segment tree 처리부분
@@ -26,10 +23,16 @@ public class Main {
 		int mid = (start + end) / 2;
 		return segTree[node] = makeSegTree(start, mid, 2*node) + makeSegTree(mid + 1, end, 2*node + 1);
 	}
-	static void treeUpdate(int node, int k) {
-		if (node == 0) return;
-		segTree[node] += k;
-		treeUpdate(node / 2, k);
+	static void update(int start, int end, int node, int idx, long k) {
+		if (idx < start || end < idx) return;
+		if (start == end) {
+			segTree[node] = k;
+			return;
+		}
+		int mid = (start + end) / 2;
+		update(start, mid, 2*node, idx, k);
+		update(mid + 1, end, 2*node + 1, idx, k);
+		segTree[node] = segTree[2*node] + segTree[2*node + 1];
 	}
 	static long get(int start, int end, int node, int left, int right) {
 		if (right < start || end < left) return 0;
@@ -45,75 +48,58 @@ public class Main {
 	}
 	
 	// Heavy-Light Decomposition
-	static void getSize(int curr) {
-		visit[curr] = true;
-		subSize[curr] = 1;
-		for (int i = 0; i < adj[curr].size(); i++) {
-			int next = adj[curr].get(i);
-			if (visit[next]) continue;
-			visit[next] = true;
-			depth[next] = depth[curr] + 1;
-			parent[next] = curr;
-			getSize(next);
-			subSize[curr] += subSize[next];
-			
-			if (subSize[next] > subSize[adj[curr].get(0)]) {
-				int temp = adj[curr].get(0);
-				adj[curr].set(0, next);
-				adj[curr].set(i, temp);
-			}
-			// 서브트리의 크기가 가장 큰 노드를 최우선적으로 방문하도록 제일 앞에 위치시킴 (순서 조정)
+	static void getSize(int curr, int parent) {
+		size[curr] = 1;
+		for (int next : adj[curr]) {
+			if (next == parent) continue;
+			getSize(next, curr);
+			size[curr] += size[next];
 		}
 	}
-	static void dfs(int curr) {
-		// 실제 HLD가 이루어지는 부분
-		visit[curr] = true;
+	static void dfs(int curr, int parent, int num) {
 		range[curr].l = ++cnt;
-		chain[curr] = chainNum;
+		depth[curr] = num;
+		
 		boolean isFirst = true;
 		for (int next : adj[curr]) {
-			if (visit[next]) continue;
-			
+			if (next == parent) continue;
 			if (isFirst) {
 				head[next] = head[curr];
-				dfs(next);
+				chainParent[next] = chainParent[curr];
+				dfs(next, curr, num);
 				isFirst = false;
-				// 각 노드에서 가장 처음에 방문하는 노드들은 같은 체인으로 처리한다
 			}
 			else {
 				head[next] = next;
-				chainNum++;
-				dfs(next);
+				chainParent[next] = curr;
+				dfs(next, curr, num + 1);
 			}
 		}
-		range[curr].r = cnt;
 	}
 	
 	// 그래프상의 쿼리
-	static long query(int u, int v) {
+	static long queryGet(int u, int v) {
 		long ret = 0;
+		
 		while (head[u] != head[v]) {
-			if (chain[u] > chain[v]) {
+			if (depth[u] > depth[v]) {
 				int temp = u;
 				u = v;
 				v = temp;
 			}
-			// v에 체인 번호가 더 나중인 정점이 오도록
+			// 깊이가 더 깊은 정점을 우선적으로 이동시킨다
 			ret += get(1, n, 1, range[head[v]].l, range[v].l);
-			v = parent[head[v]] == 0 ? head[v] : parent[head[v]];
-			// 같은 체인으로 올때까지 계속 타고 올라온다
+			v = chainParent[v];
 		}
+		// 두 정점을 같은 체인이 될때까지 상위 체인으로 이동
 		
-		if (depth[u] > depth[v]) {
-			int temp = u;
-			u = v;
-			v = temp;
-		}
-		ret += get(1, n, 1, range[u].l, range[v].l);	
+		ret += get(1, n, 1, Math.min(range[u].l, range[v].l), Math.max(range[u].l, range[v].l));
+		// 같은 체인 내에서는  쉽게 구간을 통해 계산
+		
 		return ret;
 	}
-	static void update(int v, int k) {
-		treeUpdate(idx[range[v].l], k);
+	static void queryUpdate(int v, long k) {
+		update(1, n, 1, range[v].l, k);
 	}
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -124,23 +110,20 @@ public class Main {
 		
 		segTree = new long[4*n];
 		arr = new long[n + 1];
-		subSize = new int[n + 1];
-		depth = new int[n + 1];
-		parent = new int[n + 1];
+		size = new int[n + 1];
 		head = new int[n + 1];
-		chain = new int[n + 1];
+		depth = new int[n + 1];
+		chainParent = new int[n + 1];
 		range = new Pair[n + 1];
 		adj = new ArrayList[n + 1];
-		idx = new int[n + 1];
 		st = new StringTokenizer(br.readLine());
 		for (int i = 1; i <= n; i++) {
 			arr[i] = Long.parseLong(st.nextToken());
-			idx[i] = findNode(1, n, 1, i);
 			range[i] = new Pair();
 			adj[i] = new ArrayList<>();
 		}
 		
-		while (m-- > 0) {
+		while (m-- > 0) {	
 			st = new StringTokenizer(br.readLine());
 			int u = Integer.parseInt(st.nextToken()),
 				v = Integer.parseInt(st.nextToken());
@@ -150,15 +133,18 @@ public class Main {
 		
 		int root = 1;
 		head[root] = root;
-		depth[root] = 1;
-		visit = new boolean[n + 1];
-		getSize(root);
-		visit = new boolean[n + 1];
-		chainNum = 1;
-		dfs(root);
+		getSize(root, 0);
+		for (int i = 1; i <= n; i++)
+			Collections.sort(adj[i], (i1, i2) -> {
+				return -Integer.compare(size[i1], size[i2]);
+			});
+		dfs(root, 0, 1);
+		
+		System.out.println(Arrays.toString(depth));
+		System.out.println(Arrays.toString(head));
 			
-		for (int i = 1; i <= n; i++) segTree[idx[range[i].l]] = arr[i];
-		makeSegTree(1, n, 1);
+		for (int i = 1; i <= n; i++) 
+			update(1, n, 1, range[i].l, arr[i]);
 		
 		int q = Integer.parseInt(br.readLine());
 		while (q-- > 0) {
@@ -167,12 +153,12 @@ public class Main {
 			if (op == 1) {
 				int v = Integer.parseInt(st.nextToken()),
 					k = Integer.parseInt(st.nextToken());
-				update(v, k);
+				queryUpdate(v, k);
 			}
 			else {
 				int u = Integer.parseInt(st.nextToken()),
 					v = Integer.parseInt(st.nextToken());
-				sb.append(query(u, v)).append("\n");
+				sb.append(queryGet(u, v)).append("\n");
 			}
 		}
 		System.out.print(sb);
