@@ -12,7 +12,7 @@ public class Main {
 	// arr : 각 노드에 저장된 값
 	// size : 각 노드의 서브트리 갯수
 	// head : 각 노드가 속한 체인의 가장 첫번째 노드
-	// depth : 각 노드가 속한 깊이
+	// depth : 각 노드가 속한 체인의 깊이
 	// chainParent : 해당 체인의 head의 부모 노드
 	// range : 각 노드의 HLD 방문 순서 기록
 	// segTree : 세그먼트 트리, 이때 트리의 구간은 HLD방문순서로 구간을 결정한다
