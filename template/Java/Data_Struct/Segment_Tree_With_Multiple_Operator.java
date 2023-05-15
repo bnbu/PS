@@ -22,14 +22,14 @@ public class Main {
 			mulLazy[2*node + 1] *= mulLazy[node];
 			mulLazy[2*node + 1] &= unsigned;
 			plusLazy[2*node] *= mulLazy[node];
-			mulLazy[2*node] &= unsigned;
+			plusLazy[2*node] &= unsigned;
 			plusLazy[2*node + 1] *= mulLazy[node];
-			mulLazy[2*node + 1] &= unsigned;
+			plusLazy[2*node + 1] &= unsigned;
 			
 			plusLazy[2*node] += plusLazy[node];
-			mulLazy[2*node + 1] &= unsigned;
+			plusLazy[2*node + 1] &= unsigned;
 			plusLazy[2*node + 1] += plusLazy[node];
-			mulLazy[2*node + 1] &= unsigned;
+			plusLazy[2*node + 1] &= unsigned;
 		}
 		mulLazy[node] = 1;
 		plusLazy[node] = 0;
