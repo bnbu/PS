@@ -4,12 +4,12 @@ class Pair {
 	int l, r;
 }
 public class Main {
-	static final long unsigned = 0xFFFFFFFFL;
 	static int n, cnt;
 	static int[] size, nodeDepth, chainDepth, chainHead, chainParent;
 	static long[] segTree, plusLazy, mulLazy;
 	static Pair[] hldRange;
 	static ArrayList<Integer>[] adj;
+	static final long unsigned = 0xFFFFFFFFL;
 	static void propagate(int start, int end, int node) {
 		if (plusLazy[node] == 0 && mulLazy[node] == 1) return;
 		segTree[node] *= mulLazy[node];
@@ -22,18 +22,19 @@ public class Main {
 			mulLazy[2*node + 1] *= mulLazy[node];
 			mulLazy[2*node + 1] &= unsigned;
 			plusLazy[2*node] *= mulLazy[node];
-			mulLazy[2*node] &= unsigned;
+			plusLazy[2*node] &= unsigned;
 			plusLazy[2*node + 1] *= mulLazy[node];
-			mulLazy[2*node + 1] &= unsigned;
+			plusLazy[2*node + 1] &= unsigned;
 			
 			plusLazy[2*node] += plusLazy[node];
-			mulLazy[2*node + 1] &= unsigned;
+			plusLazy[2*node] &= unsigned;
 			plusLazy[2*node + 1] += plusLazy[node];
-			mulLazy[2*node + 1] &= unsigned;
+			plusLazy[2*node + 1] &= unsigned;
 		}
 		mulLazy[node] = 1;
 		plusLazy[node] = 0;
 	}
+	
 	static void update(int start, int end, int node, int left, int right, long plus, long mul) {
 		propagate(start, end, node);
 		if (right < start || end < left) return;
@@ -255,4 +256,3 @@ public class Main {
 //이렇게 하면 문제없이 구간에 대한 덧샘, 곱샘 갱신을 할 수 있다.
 
 // unsigned를 수동으로 적용해서 결국 자바로 풀긴 했다
-// 스레기;언어
