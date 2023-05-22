@@ -3,16 +3,38 @@ package D0420;
 import java.util.*;
 import java.io.*;
 public class lowerBound {
-    static int lowerBoundSearch(ArrayList<Integer> arr, int k) {
-    	int s = 0,
-    		e = arr.size() - 1;
-        while (s < e) {
-            int m = (s + e) / 2;
-            if (arr.get(m) < k) s = m + 1;
-            else e = m;
-        }
-        return s;
-    }
+	private static int lowerBound(List<Integer> data, int target) {
+		int begin = 0;
+		int end = data.size();
+		
+		while(begin < end) {
+			int mid = (begin + end) / 2;
+			
+			if(data.get(mid) >= target) {
+				end = mid;
+			}
+			else {
+				begin = mid + 1;
+			}
+		}
+		return end;
+	}
+	private static int upperBound(List<Integer> data, int target) {
+		int begin = 0;
+		int end = data.size();
+		
+		while(begin < end) {
+			int mid = (begin + end) / 2;
+			
+			if(data.get(mid) <= target) {
+				begin = mid + 1;
+			}
+			else {
+				end = mid;
+			}
+		}
+		return end;
+	}
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
