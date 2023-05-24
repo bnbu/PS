@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class M {
+public class Main {
 	static int n;
 	static int[] dist, trace;
 	static char s, e;
