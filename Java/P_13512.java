@@ -72,7 +72,7 @@ public class Main {
 			else {
 				chainHead[next] = next;
 				chainParent[next] = curr;
-				dfs(next, curr, depth + 1, cDepth);
+				dfs(next, curr, depth + 1, cDepth + 1);
 			}
 		}
 	}
