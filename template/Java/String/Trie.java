@@ -2,7 +2,7 @@ package D0404;
 
 import java.util.*;
 import java.io.*;
-public class TrieExample {
+public class Main {
 	public static final int NEXT_MAX = 26;
 	public static class Trie {
 		Trie[] next;
