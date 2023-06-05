@@ -23,7 +23,7 @@ public class Main {
 		}
 		
 		boolean find(String key, int idx) {
-			if (key.length() - 1 == idx) return this.output;
+			if (key.length() == idx) return this.output;
 			
 			int curr = key.charAt(idx) - 'a';
 			if (next[curr] == null) return false;
