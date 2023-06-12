@@ -116,7 +116,6 @@ public class Main {
                 while (queueIdx <= edges[i].w) {
                     Queue<Query> currQ = queues[queueIdx];
                     while (!currQ.isEmpty()) {
-                        if (!flag) flag = true;
                         Query curr = currQ.poll();
 
                         if (find(curr.u) == find(curr.v)) {
