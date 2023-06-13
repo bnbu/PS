@@ -72,3 +72,6 @@ public class FenwickTree {
 // 업데이트를 위와같이 해주는 대신
 // 구간 합 쿼리는 사용 불가
 // getSumFenwick(i)를 통해 i번째 위치의 값을 얻어올 수 있다.
+
+// https://nahwasa.com/entry/%ED%8E%9C%EC%9C%85-%ED%8A%B8%EB%A6%ACFenwick-tree-BIT-%EA%B8%B0%EB%B3%B8-2D-lazy-propagationrange-update-point-query-range-update-range-query#%EC%9D%91%EC%9A%A9_2_:_%EA%B5%AC%EA%B0%84_%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8,_%EB%8B%A8%EC%9D%BC_%EA%B0%92_%ED%9A%8D%EB%93%9D
+// 저기 참고할 것
