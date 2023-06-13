@@ -75,6 +75,7 @@ public class FenwickTree_LazyPropagation {
         System.out.println(sb);
     }
 }
+// fenwick tree range update - range query
 // fenwick tree에서의 lazy propagation
 // segment tree와 약간 다르게 lazy 배열 같은게 따로 있는게 아니라
 // 아래의 아이디어를 차용해서 일차항 계수 및 상수항으로 트리를 구성해서 생각한다
