@@ -1,17 +1,20 @@
 import java.util.*;
 import java.io.*;
 public class Union_Find {
-	public static int parent[]; // °¢ °ªµéÀÇ »óÀ§ ÁıÇÕÀÇ °ª (ºÎ¸ğÀÇ °ª)
-	// ÃÊ±â¿¡´Â ÀÚ±â ÀÚ½ÅÀ» ºÎ¸ğ·Î °®´Â´Ù, Áï ÀÚ±â ÀÚ½ÅÀÌ ÃÖ»óÀ§ °³Ã¼·Î½á °¢°¢ µû·Î Á¸ÀçÇÑ´Ù
+	public static int parent[]; // ê° ê°’ë“¤ì˜ ìƒìœ„ ì§‘í•©ì˜ ê°’ (ë¶€ëª¨ì˜ ê°’)
+	static int rank[]; // í˜„ì¬ íŠ¸ë¦¬ì˜ ë†’ì´
+	// ì´ˆê¸°ì—ëŠ” ìê¸° ìì‹ ì„ ë¶€ëª¨ë¡œ ê°–ëŠ”ë‹¤, ì¦‰ ìê¸° ìì‹ ì´ ìµœìƒìœ„ ê°œì²´ë¡œì¨ ê°ê° ë”°ë¡œ ì¡´ì¬í•œë‹¤
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int n = Integer.parseInt(st.nextToken()), // 1 ~ n±îÁöÀÇ ¼ö 
-			m = Integer.parseInt(st.nextToken()); // union È¤Àº find ¿¬»ê ¼ö
+		int n = Integer.parseInt(st.nextToken()), // 1 ~ nê¹Œì§€ì˜ ìˆ˜ 
+			m = Integer.parseInt(st.nextToken()); // union í˜¹ì€ find ì—°ì‚° ìˆ˜
 		
 		parent = new int[n + 1];
-		for (int i = 1; i <= n; i++)
+		for (int i = 1; i <= n; i++) {
 			parent[i] = i;
+			size[i] = 1;
+		}
 		
 		while (m-- > 0) {
 			st = new StringTokenizer(br.readLine());
@@ -20,7 +23,7 @@ public class Union_Find {
 				int a = Integer.parseInt(st.nextToken()),
 					b = Integer.parseInt(st.nextToken());
 				union(a, b);
-			} // union ¿¬»ê -> b¸¦ aÀÇ ÇÏÀ§ °³Ã¼·Î union
+			} // union ì—°ì‚° -> bë¥¼ aì˜ í•˜ìœ„ ê°œì²´ë¡œ union
 			else {
 				int a = Integer.parseInt(st.nextToken()),
 					b = Integer.parseInt(st.nextToken());
@@ -28,7 +31,7 @@ public class Union_Find {
 					System.out.println("YES");
 				else
 					System.out.println("NO");
-			} // find ¿¬»ê b°¡ aÀÇ °³Ã¼¿Í °°Àº ÁıÇÕ¿¡ Á¸ÀçÇÏ´ÂÁö find
+			} // find ì—°ì‚° bê°€ aì˜ ê°œì²´ì™€ ê°™ì€ ì§‘í•©ì— ì¡´ì¬í•˜ëŠ”ì§€ find
 			for (int i = 1; i <= n; i++)
 				System.out.print(find(i) + " ");
 			System.out.println();
@@ -37,18 +40,26 @@ public class Union_Find {
 	public static void union(int a, int b) {
 		int x = find(a);
 		int y = find(b);
-		if (x != y) // µÎ ÁıÇÕÀÇ ÃÖ»óÀ§°³Ã¼°¡ ¼­·Î ´Ù¸£´Ù¸é, union ½ÃÅ²´Ù.
-			parent[y] = x; // bÀÇ ÃÖ»óÀ§ °³Ã¼¸¦ aÀÇ ÃÖ»óÀ§ °³Ã¼ÀÇ ÇÏÀ§ °³Ã¼·Î º¯°æ
+		// íŠ¸ë¦¬ê°€ ë” ë‚®ì€ ê²ƒì„ ë†’ì€ê²ƒ ë°‘ì— í•©ì¹œë‹¤
+		
+		if (x == y) return;
+		
+		if (rank[x] < rank[y]) parent[x] = y;
+		else {
+			parent[y] = x; 
+			if (rank[x] == rank[y]) rank[x]++;
+		}
+		// í•©ì¹˜ê³  ë‚˜ì„œ ë†’ì´ê°€ ê°™ìœ¼ë©´ ë‘˜ì¤‘ í•˜ë‚˜ ì¦ê°€
 	}
 	public static int find(int a) {
 		if (a == parent[a])
-			return a; // a¿Í aÀÇ ºÎ¸ğ(»óÀ§°³Ã¼)°¡ ¼­·Î °°´Ù¸é, a ÀÚÃ¼°¡ ÃÖ»óÀ§ °³Ã¼.
+			return a; // aì™€ aì˜ ë¶€ëª¨(ìƒìœ„ê°œì²´)ê°€ ì„œë¡œ ê°™ë‹¤ë©´, a ìì²´ê°€ ìµœìƒìœ„ ê°œì²´.
 		else {
 			return parent[a] = find(parent[a]);
-			// a¿Í aÀÇ »óÀ§°³Ã¼°¡ ´Ù¸£´Ù¸é, b(aÀÇ »óÀ§°³Ã¼ÀÇ »óÀ§°³Ã¼)¸¦ ´Ù½Ã aÀÇ »óÀ§°³Ã¼·Î
-			// ÀÌ·¯ÇÑ ÀÛ¾÷À» ¼öÇàÇÏ¸é, a°¡ ¼ÓÇÏ´Â ÃÖ»óÀ§°³Ã¼ÀÇ ¹Ù·Î ÇÏÀ§°³Ã¼·Î Á¸ÀçÇÒ ¼ö ÀÖ´Ù.
-			// ÀÌ¸¦ °è¼Ó ¹İº¹½ÃÅ°¸é ÃÊ±â O(n)ÀÛ¾÷ ÇÑ¹øÀ¸·Î
-			// ÀÌÈÄÀÇ find¸¦ ¸ğµÎ O(1)·Î °¡´É.
+			// aì™€ aì˜ ìƒìœ„ê°œì²´ê°€ ë‹¤ë¥´ë‹¤ë©´, b(aì˜ ìƒìœ„ê°œì²´ì˜ ìƒìœ„ê°œì²´)ë¥¼ ë‹¤ì‹œ aì˜ ìƒìœ„ê°œì²´ë¡œ
+			// ì´ëŸ¬í•œ ì‘ì—…ì„ ìˆ˜í–‰í•˜ë©´, aê°€ ì†í•˜ëŠ” ìµœìƒìœ„ê°œì²´ì˜ ë°”ë¡œ í•˜ìœ„ê°œì²´ë¡œ ì¡´ì¬í•  ìˆ˜ ìˆë‹¤.
+			// ì´ë¥¼ ê³„ì† ë°˜ë³µì‹œí‚¤ë©´ ì´ˆê¸° O(n)ì‘ì—… í•œë²ˆìœ¼ë¡œ
+			// ì´í›„ì˜ findë¥¼ ëª¨ë‘ O(1)ë¡œ ê°€ëŠ¥.
 		}
 	}
 	/*
@@ -67,7 +78,7 @@ public class Union_Find {
 	1 1 2 3 4 7 5 
 	1 1 6
 	YES
-	1 1 1 1 1 1 1 => ÃÖÇÏÀ§¿¡ Á¸ÀçÇÏ´ø 6À» findÇÏ´Â ¼ø°£ 
-	parent[a] = find(parent[a])¿¡ ÀÇÇØ ¸ğµÎ 1ÀÇ Á÷°è ÇÏÀ§ °³Ã¼·Î µÇ´Â ¸ğ½ÀÀÌ´Ù.
+	1 1 1 1 1 1 1 => ìµœí•˜ìœ„ì— ì¡´ì¬í•˜ë˜ 6ì„ findí•˜ëŠ” ìˆœê°„ 
+	parent[a] = find(parent[a])ì— ì˜í•´ ëª¨ë‘ 1ì˜ ì§ê³„ í•˜ìœ„ ê°œì²´ë¡œ ë˜ëŠ” ëª¨ìŠµì´ë‹¤.
 	*/
 }
