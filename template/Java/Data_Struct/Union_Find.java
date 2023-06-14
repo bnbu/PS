@@ -43,12 +43,14 @@ public class Union_Find {
 		// 트리가 더 낮은 것을 높은것 밑에 합친다
 		
 		if (x == y) return;
+		parent[x] = y;
+		// 보통은 그냥 이거 해도 될듯
 		
-		if (rank[x] < rank[y]) parent[x] = y;
-		else {
-			parent[y] = x; 
-			if (rank[x] == rank[y]) rank[x]++;
-		}
+// 		if (rank[x] < rank[y]) parent[x] = y;
+// 		else {
+// 			parent[y] = x; 
+// 			if (rank[x] == rank[y]) rank[x]++;
+// 		}
 		// 합치고 나서 높이가 같으면 둘중 하나 증가
 	}
 	public static int find(int a) {
