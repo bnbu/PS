@@ -43,10 +43,16 @@ public class Main {
 		Arrays.sort(temp);
 		for (int i = 1; i <= n; i++) 
 			arr[i] = lowerBound(temp, arr[i]);
+			// arr[i] = Arrays.binearySearch(temp, arr[i])
+
         // 여기까지가 좌표압축 부분
         // 편하게 해쉬맵을 통한 좌표압축도 있지만
         // 충돌 등의 문제로 값이 많아질 경우 느려지는 문제가 생긴다
         // 중복 제거 및 오름차순 정렬 -> 원본 배열에서 임시배열에 각각 해당 값으로 lower bound를 찾아서 변경
+
+		// 2023-06-22 : Arrays의 binarySearch 메서드는 반환값이, 값이 존재한다면 존재하는 곳의 위치(양수)를 반환
+		// 없다면 존재했었더라면 있어야 했을 위치(음수)를 반환
+		// 어차피 좌표압축은 존재하는 값만 찾게 되므로, 굳이 lower bound 함수를 따로 만들지 말고, binarySearch로 대용해도 된다.
 		
 		int m = Integer.parseInt(br.readLine());
 		ans = new int[m];
